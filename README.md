@@ -1,6 +1,6 @@
 # InternRepo
 
-A frontend project built with Vite for development and internal collaboration.
+A frontendd project built with Vite for development and internal collaboration.
 
 ## Prerequisites
 
