@@ -1,0 +1,52 @@
+stages:
+  - build
+  - harbor-push
+  - deploy
+
+variables:
+  DOCKER_IMAGE: "$HARBOR_URL/$HARBOR_PROJECT/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA"
+
+build-job:
+  stage: build
+  script:
+    - docker-compose build
+    - docker tag pviser-kamu-fe:latest $DOCKER_IMAGE
+  tags:
+    - cpl-runner
+  only:
+    - main
+
+push-job:
+  stage: harbor-push
+  script:
+    - docker login $HARBOR_URL -u $HARBOR_USER -p $HARBOR_PASSWORD
+    - docker push $DOCKER_IMAGE
+    - docker rmi pviser-kamu-fe:latest || true
+    - docker rmi $DOCKER_IMAGE || true
+  tags:
+    - cpl-runner
+  only:
+    - main
+
+deploy-job:
+  stage: deploy
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$PVISER_SSH_KEY" > ~/.ssh/pviser_rsa
+    - chmod 600 ~/.ssh/pviser_rsa
+    - ssh-keyscan $DEPLOY_SERVER >> ~/.ssh/known_hosts
+    - export IMAGE_TAG=${CI_COMMIT_SHORT_SHA:-latest}
+    - ssh -i ~/.ssh/pviser_rsa mfatech@$DEPLOY_SERVER "
+      docker login $HARBOR_URL -u $HARBOR_USER -p $HARBOR_PASSWORD &&
+      cd pviserkamufe &&
+      export IMAGE_TAG=$IMAGE_TAG &&
+      docker-compose down &&
+      docker-compose pull &&
+      docker-compose up -d
+      "
+  tags:
+    - cpl-runner
+  only:
+    - main
+  when: manual
+

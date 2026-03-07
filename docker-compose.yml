@@ -1,0 +1,10 @@
+version: '3'
+services:
+  web:
+    build: .
+    image: pviser-kamu-fe:latest
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+    container_name: pviser-kamu-fe
