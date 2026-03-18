@@ -1,7 +1,7 @@
 # InternRepo
 
 A frontend project built with Vite for development and internal collaboration.
-
+<img src="ecommerce.gif" alt="ecommerce" width="50%" height="auto"/>
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
