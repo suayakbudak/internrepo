@@ -3,7 +3,6 @@
 A frontend project built with Vite for development and internal collaboration.
 
 <img src="ecommerce.gif" alt="ecommerce" width="450"/>
-## Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
 
